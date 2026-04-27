@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UzCompare — Сравнение цен в Узбекистане</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --maroon:#1BAD72;--maroon-deep:#159558;--maroon-mid:#2ECC8F;--maroon-light:#5DDBA8;
+      --maroon-pale:#E8F9F3;--maroon-soft:#C5EFE0;
+      --cream:#F7FDFB;--cream2:#EEF9F4;--cream3:#DDF2EA;
+      --text:#0A1F17;--text2:#1E4A35;--text3:#5A8070;
+      --white:#FFFFFF;--border:#C5E0D5;--border2:#9DCEBA;
+      --shadow:rgba(27,173,114,0.13);
+    }
+    html{scroll-behavior:smooth}
+    body{background:var(--cream);color:var(--text);font-family:'Nunito',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;background-image:radial-gradient(circle at 20% 30%, rgba(46,204,143,0.07) 0%, transparent 50%),radial-gradient(circle at 80% 70%, rgba(27,173,114,0.05) 0%, transparent 50%);}
+    h1,h2,h3,.logo-text{font-family:'Playfair Display',serif}
+
+    /* NAV */
+    nav{
+      background:var(--white);border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:100;
+      padding:0 2.5rem;display:flex;align-items:center;justify-content:space-between;height:64px;
+    }
+    .logo-text{font-size:1.4rem;font-weight:800;color:var(--maroon);letter-spacing:-0.5px}
+    .logo-sub{font-size:0.65rem;font-family:'Nunito',sans-serif;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;display:block;margin-top:-4px}
+    .nav-links{display:flex;gap:2rem;list-style:none}
+    .nav-links a{font-size:0.88rem;font-weight:600;color:var(--text2);text-decoration:none;transition:color .2s}
+    .nav-links a:hover{color:var(--maroon)}
+    .lang-switch{display:flex;gap:0;border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+    .lang-btn{padding:0.35rem 0.75rem;font-size:0.78rem;font-weight:700;font-family:'Nunito',sans-serif;border:none;cursor:pointer;background:var(--white);color:var(--text3);transition:all .2s}
+    .lang-btn.active{background:var(--maroon);color:var(--white)}
+    .nav-right{display:flex;align-items:center;gap:1rem}
+    .nav-cta{background:var(--maroon);color:var(--white);border:none;padding:0.5rem 1.25rem;border-radius:8px;font-size:0.85rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background .2s}
+    .nav-cta:hover{background:var(--maroon-deep)}
+
+    /* HERO */
+    @keyframes heroGlow{
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+    }
+    @keyframes float1{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+    @keyframes float2{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(15px) scale(0.95)}}
+    .hero{
+      background:linear-gradient(135deg,#f0fdf8 0%,#e8faf3 25%,#d8f5ec 50%,#edfaf5 75%,#f0fdf8 100%);
+      background-size:400% 400%;
+      animation:heroGlow 10s ease infinite;
+      border-bottom:1px solid var(--border);
+      padding:5rem 2.5rem 4rem;
+      text-align:center;
+      position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:'';position:absolute;top:-60px;left:10%;
+      width:420px;height:420px;border-radius:50%;
+      background:radial-gradient(ellipse at center, rgba(93,219,168,0.22) 0%, transparent 70%);
+      pointer-events:none;animation:float1 8s ease-in-out infinite;
+    }
+    .hero::after{
+      content:'';position:absolute;bottom:-80px;right:5%;
+      width:340px;height:340px;border-radius:50%;
+      background:radial-gradient(ellipse at center, rgba(27,173,114,0.14) 0%, transparent 70%);
+      pointer-events:none;animation:float2 10s ease-in-out infinite;
+    }
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:0.5rem;
+      background:var(--maroon-pale);border:1px solid var(--maroon-soft);
+      color:var(--maroon);font-size:0.75rem;font-weight:700;letter-spacing:0.5px;
+      padding:0.35rem 1rem;border-radius:100px;margin-bottom:1.5rem;
+    }
+    .hero-badge span{width:6px;height:6px;border-radius:50%;background:var(--maroon-light);display:inline-block}
+    .hero h1{font-size:clamp(2.4rem,5vw,4rem);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:1rem;color:var(--text)}
+    .hero h1 em{color:var(--maroon);font-style:normal}
+    .hero-sub{font-size:1.05rem;color:var(--text3);max-width:540px;margin:0 auto 2.5rem;font-weight:400;line-height:1.7}
+    .hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+    .btn-primary{background:var(--maroon);color:var(--white);border:none;padding:0.85rem 2.2rem;border-radius:10px;font-size:0.95rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:background .2s;box-shadow:0 4px 16px var(--shadow)}
+    .btn-primary:hover{background:var(--maroon-deep)}
+    .btn-outline{background:transparent;color:var(--maroon);border:1.5px solid var(--maroon-light);padding:0.85rem 2.2rem;border-radius:10px;font-size:0.95rem;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;transition:all .2s}
+    .btn-outline:hover{background:var(--maroon-pale)}
+
+    /* SEARCH SECTION */
+    .search-section{
+      max-width:800px;margin:3rem auto;padding:0 2rem;
+    }
+    .search-box{
+      background:var(--white);border:1px solid var(--border2);border-radius:16px;
+      overflow:hidden;box-shadow:0 8px 40px var(--shadow);
+    }
+    .search-header{
+      background:var(--cream2);padding:0.9rem 1.5rem;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:0.6rem;
+    }
+    .dot{width:10px;height:10px;border-radius:50%}
+    .dot.r{background:#E24B4A}.dot.y{background:#EF9F27}.dot.g{background:#639922}
+    .search-title{font-size:0.8rem;font-weight:700;color:var(--text3);font-family:'Nunito',sans-serif;margin-left:4px}
+    .search-bar{display:flex;gap:0.8rem;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+    .search-bar input{
+      flex:1;background:var(--cream2);border:1px solid var(--border);border-radius:10px;
+      padding:0.7rem 1rem;font-family:'Nunito',sans-serif;font-size:0.92rem;color:var(--text);outline:none;
+      transition:border-color .2s;
+    }
+    .search-bar input:focus{border-color:var(--maroon-light)}
+    .search-bar input::placeholder{color:var(--text3)}
+    .search-bar button{
+      background:var(--maroon);color:var(--white);border:none;border-radius:10px;
+      padding:0.7rem 1.4rem;font-family:'Nunito',sans-serif;font-size:0.9rem;font-weight:700;
+      cursor:pointer;white-space:nowrap;transition:background .2s;
+    }
+    .search-bar button:hover{background:var(--maroon-deep)}
+    .category-chips{padding:0.9rem 1.5rem;display:flex;gap:0.6rem;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+    .cat-chip{
+      padding:0.3rem 0.85rem;border-radius:100px;font-size:0.78rem;font-weight:700;
+      border:1px solid var(--border);background:var(--white);color:var(--text2);cursor:pointer;
+      transition:all .2s;font-family:'Nunito',sans-serif;
+    }
+    .cat-chip:hover,.cat-chip.active{background:var(--maroon-pale);border-color:var(--maroon-light);color:var(--maroon)}
+    .results-area{padding:1rem 1.5rem 1.5rem}
+    .result-meta{font-size:0.75rem;color:var(--text3);margin-bottom:0.8rem;font-weight:600}
+    .result-meta strong{color:var(--maroon)}
+
+    /* TABLE */
+    .price-table{width:100%;border-collapse:collapse}
+    .price-table th{text-align:left;font-size:0.72rem;color:var(--text3);font-weight:700;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:0.5px}
+    .price-table td{padding:0.7rem 0.75rem;font-size:0.85rem;border-bottom:1px solid var(--cream3)}
+    .price-table tr:last-child td{border-bottom:none}
+    .price-table tr:hover td{background:var(--cream2)}
+    .best-row td{background:var(--maroon-pale)!important}
+    .platform-badge{display:inline-flex;align-items:center;gap:0.45rem;font-weight:700}
+    .plat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .td-muted{color:var(--text3);font-size:0.82rem}
+    .price-best{color:var(--maroon);font-weight:800}
+    .price-diff{font-size:0.72rem;font-weight:700;padding:0.2rem 0.5rem;border-radius:5px}
+    .price-diff.neg{background:#E8F5FF;color:#1565C0}
+    .price-diff.pos{background:#FFF0EE;color:#C0391D}
+    .price-diff.zero{background:var(--cream3);color:var(--text3)}
+    .best-tag{font-size:0.68rem;background:var(--maroon);color:var(--white);padding:0.15rem 0.45rem;border-radius:4px;margin-left:0.3rem;font-weight:700}
+    .bar-wrap{display:flex;align-items:center;gap:8px}
+    .bar{height:6px;border-radius:3px;background:var(--border);min-width:4px;transition:width .8s ease}
+    .bar.best{background:var(--maroon)}
+
+    /* STATS */
+    .stats{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      max-width:900px;margin:3rem auto;padding:0 2rem;gap:1rem;
+    }
+    .stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.4rem;text-align:center}
+    .stat-num{font-size:2rem;font-weight:800;font-family:'Playfair Display',serif;color:var(--maroon)}
+    .stat-label{font-size:0.8rem;color:var(--text3);font-weight:600;margin-top:0.25rem}
+
+    /* SECTION */
+    .section{max-width:1000px;margin:4rem auto;padding:0 2.5rem}
+    .section-label{font-size:0.72rem;color:var(--maroon);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.6rem}
+    .section h2{font-size:clamp(1.7rem,3vw,2.5rem);font-weight:800;letter-spacing:-1px;margin-bottom:0.5rem;color:var(--text)}
+    .section .sub{color:var(--text3);font-size:0.95rem;max-width:480px;line-height:1.7;margin-bottom:2.5rem;font-weight:400}
+
+    /* MARKETPLACES */
+    .markets-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+    .market-card{
+      background:var(--white);border:1px solid var(--border);border-radius:14px;
+      padding:1.2rem 1.4rem;display:flex;align-items:center;gap:0.9rem;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .market-card:hover{border-color:var(--border2);box-shadow:0 4px 16px var(--shadow)}
+    .market-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .market-name{font-size:0.88rem;font-weight:700;color:var(--text)}
+    .market-tag{font-size:0.7rem;color:var(--text3);font-weight:500}
+
+    /* FEATURES */
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem}
+    .feat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:1.6rem;transition:border-color .2s}
+    .feat-card:hover{border-color:var(--border2)}
+    .feat-icon{width:40px;height:40px;background:var(--maroon-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:1rem}
+    .feat-card h3{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem;color:var(--text);font-family:'Nunito',sans-serif}
+    .feat-card p{font-size:0.83rem;color:var(--text3);line-height:1.65}
+
+    /* HOW IT WORKS */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;margin-top:2rem}
+    .step{text-align:center;padding:1.5rem}
+    .step-num{width:44px;height:44px;border-radius:50%;background:var(--maroon);color:var(--white);font-size:1.1rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-family:'Playfair Display',serif}
+    .step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem;font-family:'Nunito',sans-serif}
+    .step p{font-size:0.83rem;color:var(--text3);line-height:1.6}
+
+    /* PRICING */
+    .pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;max-width:780px}
+    .plan{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:2rem;position:relative;transition:border-color .2s}
+    .plan:hover{border-color:var(--border2)}
+    .plan.featured{border:2px solid var(--maroon)}
+    .plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--maroon);color:var(--white);font-size:0.7rem;padding:0.25rem 0.9rem;border-radius:100px;font-weight:700;white-space:nowrap;font-family:'Nunito',sans-serif}
+    .plan-name{font-size:0.78rem;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.6rem}
+    .plan-price{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:800;color:var(--maroon);letter-spacing:-1px}
+    .plan-price span{font-size:0.95rem;font-weight:400;color:var(--text3);font-family:'Nunito',sans-serif}
+    .plan-price.small{font-size:1.5rem}
+    .plan-desc{font-size:0.8rem;color:var(--text3);margin:0.4rem 0 1.2rem;line-height:1.5}
+    .plan-features{list-style:none;display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1.5rem}
+    .plan-features li{font-size:0.83rem;color:var(--text3);display:flex;align-items:center;gap:0.5rem}
+    .plan-features li.yes{color:var(--text2)}
+    .plan-features li.yes::before{content:'✓';color:var(--maroon);font-weight:700;flex-shrink:0}
+    .plan-features li:not(.yes)::before{content:'–';color:var(--border2);flex-shrink:0}
+    .plan-btn{width:100%;padding:0.75rem;border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border2);background:transparent;color:var(--text2);transition:all .2s}
+    .plan-btn:hover{background:var(--maroon-pale);border-color:var(--maroon);color:var(--maroon)}
+    .plan-btn.primary{background:var(--maroon);border-color:var(--maroon);color:var(--white)}
+    .plan-btn.primary:hover{background:var(--maroon-deep)}
+
+    /* FOOTER */
+    footer{background:var(--white);border-top:1px solid var(--border);margin-top:5rem;padding:2.5rem;text-align:center}
+    .footer-logo{font-size:1.3rem;font-weight:800;color:var(--maroon);margin-bottom:0.5rem}
+    footer p{font-size:0.8rem;color:var(--text3);margin-bottom:0.3rem}
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+      nav{padding:0 1.2rem}
+      .nav-links{display:none}
+      .hero{padding:3rem 1.5rem 2.5rem}
+      .search-section{padding:0 1rem}
+      .stats{padding:0 1rem}
+      .section{padding:0 1.5rem}
+      footer{padding:1.5rem}
+    }
+    @media(max-width:480px){
+      .price-table th:nth-child(2),.price-table td:nth-child(2){display:none}
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div>
+    <div class="logo-text">UzCompare</div>
+    <span class="logo-sub">Сравнение цен · Нарх солиштириш</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#markets">Маркетплейсы</a></li>
+    <li><a href="#features">Возможности</a></li>
+    <li><a href="#pricing">Тарифы</a></li>
+    <li><a href="#how">Как работает</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLang('ru',this)">RU</button>
+      <button class="lang-btn" onclick="setLang('uz',this)">UZ</button>
+    </div>
+    <button class="nav-cta" id="nav-cta-btn">Начать сейчас</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1 id="hero-h1">Сравните цены на <em>любой товар</em><br>во всех маркетплейсах</h1>
+  <p class="hero-sub" id="hero-sub">iPhone, Samsung, техника, одежда — мгновенно сравниваем цены на Uzum, Yandex Market, Ozon, Alif, Asaxiy, Wildberries и других платформах.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" id="hero-btn1">Найти лучшую цену</button>
+    <button class="btn-outline" id="hero-btn2">Посмотреть демо →</button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div class="search-section">
+  <div class="search-box">
+    <div class="search-header">
+      <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+      <span class="search-title">UzCompare — поиск лучшей цены</span>
+    </div>
+    <div class="search-bar">
+      <input id="searchInput" placeholder="Например: iPhone 15 Pro, Samsung Galaxy S24..." value="iPhone 15 Pro 128GB"/>
+      <button onclick="runSearch()">Сравнить цены</button>
+    </div>
+    <div class="category-chips">
+      <span class="cat-chip active" onclick="loadCategory('phone',this)">📱 Телефоны</span>
+      <span class="cat-chip" onclick="loadCategory('laptop',this)">💻 Ноутбуки</span>
+      <span class="cat-chip" onclick="loadCategory('tv',this)">📺 Телевизоры</span>
+      <span class="cat-chip" onclick="loadCategory('appliance',this)">🏠 Техника</span>
+      <span class="cat-chip" onclick="loadCategory('clothes',this)">👕 Одежда</span>
+      <span class="cat-chip" onclick="loadCategory('beauty',this)">💄 Красота</span>
+    </div>
+    <div class="results-area">
+      <div class="result-meta" id="meta">Показано <strong>7 предложений</strong> с 7 платформ · обновлено 2 мин назад</div>
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Платформа</th>
+            <th>Название товара</th>
+            <th>Цена</th>
+            <th>Разница</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-card"><div class="stat-num">10+</div><div class="stat-label">Маркетплейсов</div></div>
+  <div class="stat-card"><div class="stat-num">1 ч</div><div class="stat-label">Цикл обновления</div></div>
+  <div class="stat-card"><div class="stat-num" id="stat-saving">18%</div><div class="stat-label">Средняя экономия</div></div>
+  <div class="stat-card"><div class="stat-num">500К+</div><div class="stat-label">Товаров в базе</div></div>
+</div>
+
+<!-- MARKETS -->
+<div class="section" id="markets">
+  <div class="section-label">Источники данных</div>
+  <h2>Маркетплейсы Узбекистана</h2>
+  <p class="sub">Мониторим все ключевые платформы, доступные в Узбекистане.</p>
+  <div class="markets-grid">
+    <div class="market-card"><div class="market-icon" style="background:#FFF0E6">🛒</div><div><div class="market-name">Uzum Market</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#FFFDE6">🟡</div><div><div class="market-name">Yandex Market</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#E6F0FF">🔵</div><div><div class="market-name">Ozon</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#E6FFF0">🟢</div><div><div class="market-name">Alif Shop</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#FFE6E6">🔴</div><div><div class="market-name">Asaxiy</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#F0E6FF">🟣</div><div><div class="market-name">Wildberries</div><div class="market-tag">Узбекистан</div></div></div>
+    <div class="market-card"><div class="market-icon" style="background:#FFFAE6">⭐</div><div><div class="market-name">OLX.uz</div><div class="market-tag">Узбекистан</div></div></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section" id="how" style="background:var(--white);max-width:100%;padding:3rem 2.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div style="max-width:1000px;margin:0 auto">
+    <div class="section-label">Как работает</div>
+    <h2>Три шага к лучшей цене</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3 id="step1-h">Введите товар</h3>
+        <p id="step1-p">Напишите название товара — мы поймём, что вы ищете, даже если написать приблизительно.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3 id="step2-h">Мы сравниваем</h3>
+        <p id="step2-p">Проверяем все доступные маркетплейсы и показываем все актуальные предложения.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3 id="step3-h">Покупайте выгодно</h3>
+        <p id="step3-p">Выбирайте лучшую цену и переходите прямо на страницу товара. Экономьте в среднем 18%.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="section" id="features">
+  <div class="section-label">Возможности</div>
+  <h2>Всё для умной покупки</h2>
+  <p class="sub">Инструменты, которые помогают не просто найти дешевле, а купить правильно.</p>
+  <div class="features">
+    <div class="feat-card"><div class="feat-icon">⚡</div><h3>Мгновенное сравнение</h3><p>Результаты за секунду. Данные обновляются каждый час, поэтому цены всегда актуальны.</p></div>
+    <div class="feat-card"><div class="feat-icon">📉</div><h3>История цен</h3><p>График динамики цены за последние 12 месяцев. Видите, когда товар был дешевле всего.</p></div>
+    <div class="feat-card"><div class="feat-icon">🔔</div><h3>Уведомления о снижении</h3><p>Укажите желаемую цену — получите уведомление в Telegram, когда цена опустится до неё.</p></div>
+    <div class="feat-card"><div class="feat-icon">📊</div><h3>Аналитика рынка</h3><p>Средняя, минимальная и максимальная цены по рынку. Понимайте реальную стоимость товара.</p></div>
+    <div class="feat-card"><div class="feat-icon">🔗</div><h3>Прямые ссылки</h3><p>Один клик — и вы на странице товара в нужном маркетплейсе. Без лишних шагов.</p></div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="section" id="pricing">
+  <div class="section-label">Тарифы</div>
+  <h2>Простые и честные цены</h2>
+  <p class="sub">14 дней бесплатного пробного периода. Без привязки карты.</p>
+  <div class="pricing">
+    <div class="plan">
+      <div class="plan-name">Стандарт</div>
+      <div class="plan-price">$15<span>/мес</span></div>
+      <div class="plan-desc">Для личного использования</div>
+      <ul class="plan-features">
+        <li class="yes">Неограниченные поиски</li>
+        <li class="yes">Все маркетплейсы</li>
+        <li class="yes">Текущие цены</li>
+        <li class="yes">История цен 3 мес</li>
+        <li>Уведомления</li>
+        <li>API доступ</li>
+      </ul>
+      <button class="plan-btn">Начать</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Популярный</div>
+      <div class="plan-name">Про</div>
+      <div class="plan-price">$50<span>/мес</span></div>
+      <div class="plan-desc">Для активных покупателей</div>
+      <ul class="plan-features">
+        <li class="yes">Неограниченные поиски</li>
+        <li class="yes">Все маркетплейсы</li>
+        <li class="yes">История цен 12 мес</li>
+        <li class="yes">Telegram уведомления</li>
+        <li class="yes">Экспорт в Excel</li>
+        <li>API доступ</li>
+      </ul>
+      <button class="plan-btn primary">Попробовать 14 дней</button>
+    </div>
+    <div class="plan">
+      <div class="plan-name">Бизнес</div>
+      <div class="plan-price small">По запросу</div>
+      <div class="plan-desc">Для компаний и интеграций</div>
+      <ul class="plan-features">
+        <li class="yes">REST API доступ</li>
+        <li class="yes">Кастомные маркетплейсы</li>
+        <li class="yes">SLA гарантии</li>
+        <li class="yes">Выделенный менеджер</li>
+        <li class="yes">Командный доступ</li>
+        <li class="yes">White-label опция</li>
+      </ul>
+      <button class="plan-btn">Связаться с нами</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">UzCompare</div>
+  <p>Нарх солиштириш · Сравнение цен в Узбекистане</p>
+  <p>© 2025 UzCompare · Toshkent, O'zbekiston · info@uzcompare.uz</p>
+  <p style="margin-top:0.5rem;font-size:0.75rem">Maxfiylik siyosati · Политика конфиденциальности</p>
+</footer>
+
+<script>
+const DATASETS = {
+  phone: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Apple iPhone 15 Pro 128GB (Black)", price:12490000, stock:"В наличии"},
+    {platform:"Asaxiy",      color:"#C0392B", name:"iPhone 15 Pro 128GB Natural Titanium",price:12850000, stock:"В наличии"},
+    {platform:"Alif Shop",   color:"#27AE60", name:"Apple iPhone 15 Pro 128GB",          price:13200000, stock:"В наличии"},
+    {platform:"Yandex Market",color:"#F39C12",name:"Смартфон Apple iPhone 15 Pro 128GB", price:13900000, stock:"В наличии"},
+    {platform:"Ozon",        color:"#2980B9", name:"Apple iPhone 15 Pro 128Gb Black",    price:14200000, stock:"Под заказ"},
+    {platform:"Wildberries", color:"#8E44AD", name:"Apple iPhone 15 Pro 128 GB",         price:14600000, stock:"В наличии"},
+    {platform:"OLX.uz",      color:"#F1C40F", name:"iPhone 15 Pro 128 GB б/у",           price:11200000, stock:"Б/у"},
+  ],
+  laptop: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Apple MacBook Air M2 8/256GB Space Gray",price:15800000, stock:"В наличии"},
+    {platform:"Alif Shop",   color:"#27AE60", name:"MacBook Air 13 M2 8/256GB",              price:16200000, stock:"В наличии"},
+    {platform:"Asaxiy",      color:"#C0392B", name:"Apple MacBook Air M2 256GB",             price:16500000, stock:"В наличии"},
+    {platform:"Yandex Market",color:"#F39C12","name":"MacBook Air 13'' M2 8/256 Space Gray",  price:17100000, stock:"В наличии"},
+    {platform:"Ozon",        color:"#2980B9", name:"Ноутбук Apple MacBook Air 13 M2",        price:17400000, stock:"Под заказ"},
+    {platform:"Wildberries", color:"#8E44AD", name:"MacBook Air M2 256Gb",                   price:17900000, stock:"В наличии"},
+  ],
+  tv: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Samsung 55\" QLED 4K Q60C",   price:5200000, stock:"В наличии"},
+    {platform:"Asaxiy",      color:"#C0392B", name:"Samsung QE55Q60CAUXCE 55\"",  price:5450000, stock:"В наличии"},
+    {platform:"Alif Shop",   color:"#27AE60", name:"Samsung 55 Q60C QLED",        price:5600000, stock:"В наличии"},
+    {platform:"Yandex Market",color:"#F39C12","name":"Телевизор Samsung QE55Q60C", price:5900000, stock:"В наличии"},
+    {platform:"Ozon",        color:"#2980B9", name:"Samsung 55 QLED 4K Smart TV", price:6100000, stock:"Под заказ"},
+  ],
+  appliance: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Стиральная машина LG 8кг F2WV3S8S4U", price:3800000, stock:"В наличии"},
+    {platform:"Asaxiy",      color:"#C0392B", name:"LG F2WV3S8S4U 8кг белый",             price:3950000, stock:"В наличии"},
+    {platform:"Alif Shop",   color:"#27AE60", name:"LG 8kg F2WV3S8S4U стиралка",          price:4100000, stock:"В наличии"},
+    {platform:"Yandex Market",color:"#F39C12","name":"Стиральная машина LG 8 кг",           price:4350000, stock:"В наличии"},
+    {platform:"Wildberries", color:"#8E44AD", name:"LG стиральная машина 8кг",             price:4500000, stock:"В наличии"},
+  ],
+  clothes: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Nike Air Max 270 White 42",  price:890000, stock:"В наличии"},
+    {platform:"Wildberries", color:"#8E44AD", name:"Nike Air Max 270 р.42 бел",  price:820000, stock:"В наличии"},
+    {platform:"Ozon",        color:"#2980B9", name:"Кроссовки Nike Air Max 270", price:950000, stock:"В наличии"},
+    {platform:"Yandex Market",color:"#F39C12","name":"Nike Air Max 270 42 размер", price:1050000, stock:"Под заказ"},
+  ],
+  beauty: [
+    {platform:"Uzum Market", color:"#E67E22", name:"Крем Nivea Soft 200мл",     price:45000, stock:"В наличии"},
+    {platform:"Ozon",        color:"#2980B9", name:"NIVEA Soft крем 200 мл",    price:38000, stock:"В наличии"},
+    {platform:"Wildberries", color:"#8E44AD", name:"Nivea Soft 200 мл увлаж",   price:41000, stock:"В наличии"},
+  ],
+};
+
+const NAMES = {
+  phone:"iPhone 15 Pro 128GB",
+  laptop:"MacBook Air M2 8/256GB",
+  tv:"Samsung 55\" QLED 4K",
+  appliance:"LG Стиральная машина 8кг",
+  clothes:"Nike Air Max 270 р.42",
+  beauty:"Nivea Soft 200мл",
+};
+
+let currentData = DATASETS.phone;
+
+function formatPrice(p){return p.toLocaleString('ru-RU')+' сум'}
+
+function renderTable(data){
+  const tbody=document.getElementById('tbody');
+  const min=Math.min(...data.map(d=>d.price));
+  const max=Math.max(...data.map(d=>d.price));
+  const avg=Math.round(data.reduce((a,b)=>a+b.price,0)/data.length);
+  document.getElementById('meta').innerHTML=
+    `Найдено <strong>${data.length} предложений</strong> с ${data.length} платформ · средняя цена: <strong>${formatPrice(avg)}</strong>`;
+  tbody.innerHTML=data.sort((a,b)=>a.price-b.price).map(d=>{
+    const isBest=d.price===min;
+    const diff=Math.round((d.price-min)/min*100);
+    const barW=max===min?50:Math.round(30+(d.price-min)/(max-min)*65);
+    const diffCls=diff===0?'zero':diff<20?'neg':'pos';
+    const stockColor=d.stock==='В наличии'?'#0F6E56':d.stock==='Б/у'?'#BA7517':'#888';
+    return `<tr class="${isBest?'best-row':''}">
+      <td><div class="platform-badge"><div class="plat-dot" style="background:${d.color}"></div>${d.platform}</div></td>
+      <td class="td-muted">${d.name}</td>
+      <td class="${isBest?'price-best':''}">${formatPrice(d.price)}${isBest?'<span class="best-tag">ЛУЧШАЯ</span>':''}</td>
+      <td><span class="price-diff ${diffCls}">${diff===0?'0%':'+'+diff+'%'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function runSearch(){
+  renderTable(currentData);
+}
+
+function loadCategory(cat, el){
+  document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentData=DATASETS[cat]||DATASETS.phone;
+  document.getElementById('searchInput').value=NAMES[cat]||'';
+  renderTable(currentData);
+}
+
+// LANG
+const TEXTS = {
+  ru:{
+    badge:'Узбекистан · 10+ маркетплейсов · Реальное время',
+    h1:'Сравните цены на <em>любой товар</em><br>во всех маркетплейсах',
+    sub:'iPhone, Samsung, техника, одежда — мгновенно сравниваем цены на Uzum, Yandex Market, Ozon, Alif, Asaxiy, Wildberries и других платформах.',
+    btn1:'Найти лучшую цену',btn2:'Посмотреть демо →',
+    cta:'Начать сейчас',
+    s1h:'Введите товар',s1p:'Напишите название товара — мы поймём, что вы ищете, даже если написать приблизительно.',
+    s2h:'Мы сравниваем',s2p:'Проверяем все доступные маркетплейсы и показываем все актуальные предложения.',
+    s3h:'Покупайте выгодно',s3p:'Выбирайте лучшую цену и переходите прямо на страницу товара. Экономьте в среднем 18%.',
+  },
+  uz:{
+    badge:"O'zbekiston · 10+ marketplace · Real vaqt",
+    h1:"<em>Istalgan mahsulot</em>ni barcha<br>marketplaylarda narxini solishtiring",
+    sub:"iPhone, Samsung, texnika, kiyim — Uzum, Yandex Market, Ozon, Alif, Asaxiy, Wildberries va boshqa platformalardagi narxlarni bir zumda solishtiring.",
+    btn1:"Eng yaxshi narxni toping",btn2:"Demoni ko'rish →",
+    cta:"Boshlash",
+    s1h:"Mahsulotni kiriting",s1p:"Mahsulot nomini yozing — taxminan yozsangiz ham tushunib olamiz.",
+    s2h:"Biz solishtiramiz",s2p:"Barcha mavjud marketplaylarni tekshirib, barcha dolzarb takliflarni ko'rsatamiz.",
+    s3h:"Tejamli xarid qiling",s3p:"Eng yaxshi narxni tanlang va to'g'ridan-to'g'ri mahsulot sahifasiga o'ting. O'rtacha 18% tejang.",
+  }
+};
+
+function setLang(lang, btn){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const t=TEXTS[lang];
+  document.getElementById('badge-text').textContent=t.badge;
+  document.getElementById('hero-h1').innerHTML=t.h1;
+  document.getElementById('hero-sub').textContent=t.sub;
+  document.getElementById('hero-btn1').textContent=t.btn1;
+  document.getElementById('hero-btn2').textContent=t.btn2;
+  document.getElementById('nav-cta-btn').textContent=t.cta;
+  document.getElementById('step1-h').textContent=t.s1h;
+  document.getElementById('step1-p').textContent=t.s1p;
+  document.getElementById('step2-h').textContent=t.s2h;
+  document.getElementById('step2-p').textContent=t.s2p;
+  document.getElementById('step3-h').textContent=t.s3h;
+  document.getElementById('step3-p').textContent=t.s3p;
+}
+
+renderTable(currentData);
+</script>
+</body>
+</html>
